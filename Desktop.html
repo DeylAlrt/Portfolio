@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS_FOLDER/Desktop.css">
+    <title>Desktop</title>
+</head>
+<body>
+    <img class="desktop-bg" src="https://ik.imagekit.io/mpojoducq/Desktop%20Background.jpg?updatedAt=1752227499999" alt="Windows 11 background">
+    
+    <div class="desktop-icons">
+        <div class="icon" id="projects-icon">
+            <img src="https://img.icons8.com/color/96/000000/folder-invoices--v2.png" alt="Projects">
+            <span>Projects</span>
+        </div>
+        <div class="icon">
+            <img src="https://img.icons8.com/color/96/000000/notepad--v1.png" alt="About me">
+            <span>About me</span>
+        </div>
+        <div class="icon">
+            <img src="https://img.icons8.com/color/96/000000/chrome--v1.png" alt="Resume">
+            <span>Resume</span>
+        </div>
+        <div class="icon" id="contact-icon">
+            <img src="https://img.icons8.com/color/96/000000/whatsapp--v1.png" alt="Contact">
+            <span>Contact</span>
+        </div>
+        <div class="icon" id="recycle-icon">
+            <img id="recycle-img" src="https://img.icons8.com/color/96/000000/recycle-bin.png" alt="Recycle Bin">
+            <span>Recycle Bin</span>
+        </div>
+    </div>
+
+    <!-- About Me Modal -->
+    <div id="app-modal" class="app-modal" style="display:none;">
+        <div class="app-titlebar" id="app-titlebar">
+            <span id="app-title" style="color: white;">About Me - Notepad</span>
+            <div class="app-titlebar-buttons">
+                <button id="app-minimize" title="Minimize">–</button>
+                <button id="app-maximize" title="Maximize">□</button>
+                <button id="app-close" title="Close">×</button>
+            </div>
+        </div>
+        <div class="app-content" id="app-content">
+            <div class="notepad-toolbar">
+                <span>File</span><span>Edit</span><span>View</span>
+                <span style="margin-left:40px;">H1</span><span>B</span>
+                <span style="margin-left:10px;">🔗</span><span style="margin-left:10px;">🖌️</span>
+            </div>
+            <div class="notepad-area">
+                <pre class="notepad-text" contenteditable="true">Hey, Im Dale Alerta! 
+
+I am an creative developer/designer who likes to build exciting online experiences. I have a solid background in the fields of design and development. I focus on web pages and applications that are appealing and easy to navigate. I like working with clients in order to make their ideas work and I am constantly looking to learn new tools and methods to improve my work. 
+
+Experiences:
+ <img src="https://ik.imagekit.io/mpojoducq/HTML.png?updatedAt=1758814226642" style="width: 14%;" alt="HTML"> <img src="https://ik.imagekit.io/mpojoducq/CSS.png?updatedAt=1758814337307" style="width: 14%;" alt="CSS"> <img src="https://ik.imagekit.io/mpojoducq/javascript.png?updatedAt=1758814913633" style="width: 15%;" alt="JavaScript"> <img src="https://ik.imagekit.io/mpojoducq/CSharp.png?updatedAt=1758815472395" style="width: 13%;" alt="C Sharp"> <img src="https://ik.imagekit.io/mpojoducq/VS%20Code.png?updatedAt=1758816356450" style="width: 11%;" alt="Vs Code"> <img src="https://ik.imagekit.io/mpojoducq/Figma.png?updatedAt=1759825043673" style="width: 11%;" alt="Figma">  
+                </pre>
+            </div>
+        </div>
+        <div class="notepad-statusbar">
+            <span>Ln 8, Col 18</span><span>211 characters</span><span>Plain text</span>
+            <span>100%</span><span>Windows (CRLF)</span><span>UTF-8</span>
+        </div>
+    </div>
+
+    <!-- Projects Modal - FIXED & CLEAN -->
+    <div id="projects-modal" class="projects-modal-custom" style="display:none;">
+        <div class="app-titlebar" id="projects-titlebar">
+            <span style="color: white;">Projects</span>
+            <div class="app-titlebar-buttons">
+                <button id="projects-minimize" title="Minimize">–</button>
+                <button id="projects-maximize" title="Maximize">□</button>
+                <button id="projects-close" title="Close">×</button>
+            </div>    
+        </div>
+
+        <div class="projects-explorer">
+            <div class="projects-sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">Quick access</div>
+                    <div class="sidebar-link active"><img src="https://img.icons8.com/color/24/000000/folder-invoices--v2.png" alt="Projects"/> Projects</div>
+                    <div class="sidebar-link"><img src="https://img.icons8.com/color/24/000000/desktop.png" alt="Desktop"/> Desktop</div>
+                    <div class="sidebar-link"><img src="https://img.icons8.com/color/24/000000/downloads.png" alt="Downloads"/> Downloads</div>
+                    <div class="sidebar-link"><img src="https://img.icons8.com/color/24/000000/music.png" alt="Music"/> Music</div>
+                    <div class="sidebar-link"><img src="https://img.icons8.com/color/24/000000/video.png" alt="Videos"/> Videos</div>
+                    <hr class="sidebar-separator">
+                    <div class="sidebar-link"><img src="https://img.icons8.com/color/24/000000/computer.png" alt="This PC"/> This PC</div>
+                    <div class="sidebar-link"><img src="https://img.icons8.com/color/24/000000/network.png" alt="Network"/> Network</div>
+                </div>  
+            </div>
+
+            <div class="projects-main">
+                <!-- CLEAN TOPBAR -->
+                <div class="projects-topbar">
+                    <div class="projects-path">Quick access › Projects</div>
+                    <div class="projects-toolbar-left">
+                        <span>New</span><span>Sort</span><span>View</span><span>Filter</span><span>⋯</span>
+                    </div>
+                    <div class="projects-status-info">
+                        <span>5 items</span>
+                        <span>Details</span>
+                        <span>Sort by Name</span>
+                        <span>100%</span>
+                    </div>
+                </div>
+
+                <div class="projects-grid">
+                    <a class="project-folder" href="https://www.figma.com/proto/BPW5tyvQEE7K3AQvy1ahm1/ALERTIFY?node-id=0-1&t=ZbTf0zY2STL0uzs4-1" target="_blank">
+                        <img src="https://img.icons8.com/?size=100&id=zfHRZ6i1Wg0U&format=png&color=000000"/>
+                        <div class="project-file-name">Budget Tracker App Prototype</div>
+                        <div class="project-file-details">Figma</div>
+                    </a>
+                    <a class="project-folder" href="https://www.figma.com/proto/Di0ITSnmfxi10xloi9OEDE/Goof-bol?node-id=352-758&t=lglLWSxHg7BmsAdQ-1" target="_blank">
+                        <img src="https://img.icons8.com/?size=100&id=zfHRZ6i1Wg0U&format=png&color=000000"/>
+                        <div class="project-file-name">E-commerce Front-end</div>
+                        <div class="project-file-details">Figma</div>
+                    </a>
+                    <a class="project-file" href="https://drive.google.com/file/d/153VbUn9RJzUqMIylYhbQvLW9bjWozGv0/view?usp=sharing" target="_blank">
+                        <img src="https://img.icons8.com/?size=100&id=13441&format=png&color=000000"/>
+                        <div class="project-file-name">Vending Machine.py</div>
+                        <div class="project-file-details">Python</div>
+                    </a>
+                    <a class="project-file" href="https://navilleracharms.netlify.app/" target="_blank">
+                        <img src="https://img.icons8.com/?size=100&id=12141&format=png&color=000000">
+                        <div class="project-file-name">Italian Charms Business Website</div>
+                        <div class="project-file-details">File</div>
+                    </a>
+                    <a class="project-file" href="https://yourproject3.com" target="_blank">
+                        <img src="https://img.icons8.com/?size=100&id=12141&format=png&color=000000"/>
+                        <div class="project-file-name">script.js</div>
+                        <div class="project-file-details">Web Portfolio</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resume Modal -->
+    <div id="resume-modal" class="app-modal" style="display:none;">
+        <div class="app-titlebar" id="resume-titlebar">
+            <span style="color:white;">Dale Gesulga Alerta - Resume.pdf - Google Chrome</span>
+            <div class="app-titlebar-buttons">
+                <button id="resume-minimize">–</button>
+                <button id="resume-maximize">□</button>
+                <button id="resume-close">×</button>
+            </div>
+        </div>
+        <div style="background:#f8f9fa; height:100%; display:flex; flex-direction:column;">
+            <div style="background:white; padding:10px 60px; border-bottom:1px solid #dadce0; display:flex; align-items:center; gap:12px; font-family:Google Sans,Arial,sans-serif; font-size:14px; color:#3c4043;">
+                <img src="https://www.google.com/favicon.ico" width="16">
+                <div><strong>Dale Gesulga Alerta - Resume.pdf</strong> <span style="color:#5f6368; margin-left:8px;">File saved</span></div>
+                <div style="margin-left:auto; display:flex; gap:8px;">
+                    <button style="background:none; border:none; font-size:20px; cursor:pointer;">☆</button>
+                    <button style="background:none; border:none; font-size:20px; cursor:pointer;">☁</button>
+                    <button style="background:#1a73e8; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Share</button>
+                </div>
+            </div>
+            <div class="resume-pdf-container">
+                <img src="https://ik.imagekit.io/mpojoducq/Marketing%20and%20Sales%20Resume%20in%20Grey%20Black%20Simple%20Style.png" alt="Dale Alerta Resume" style="width:100%; max-width:850px; height:auto; box-shadow:0 10px 40px rgba(0,0,0,0.15); border-radius:8px; display:block; margin:0 auto;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Recycle Bin Modal -->
+    <div id="recycle-modal" class="app-modal" style="display:none;">
+        <div class="app-titlebar" id="recycle-titlebar">
+            <span style="color: white;">Recycle Bin</span>
+            <div class="app-titlebar-buttons">
+                <button id="recycle-minimize">–</button>
+                <button id="recycle-maximize">□</button>
+                <button id="recycle-close">×</button>
+            </div>
+        </div>
+        <div style="flex:1; background:#181818; color:#fff; overflow:auto; padding:20px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                <h3>Items in Recycle Bin (<span id="trash-count">0</span>)</h3>
+                <button id="empty-bin" style="background:#d32f2f; color:white; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">Empty Recycle Bin</button>
+            </div>
+            <div id="trash-items" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:16px;"></div>
+            <div id="empty-trash-msg" style="text-align:center; padding:80px 20px; color:#aaa; display:none;">
+                <img src="https://img.icons8.com/color/96/000000/recycle-bin.png" style="opacity:0.3;">
+                <p>This Recycle Bin is empty.<br>Drag icons here to delete them 😈</p>
+            </div>
+        </div>
+    </div>    
+
+    <!-- WhatsApp Overlay -->
+    <div id="whatsapp-overlay">
+        <div id="whatsapp-modal">
+            <div class="chat-sidebar">
+                <div class="sidebar-header">
+                    <span>Contact</span>
+                    <button id="close-modal-btn" style="background:none; border:none; color:white; font-size: 1.5em; cursor: pointer; padding: 0;">×</button>
+                </div>
+                <div class="chat-list" id="chat-list"></div>
+            </div>
+            <div class="chat-main" id="chat-main">
+                <div class="chat-header">
+                    <img id="chat-header-pfp" class="chat-pfp" src="https://img.icons8.com/color/96/000000/user-male-circle--v1.png" alt="PFP">
+                    <span id="chat-header-name" class="chat-user-name-display">Select a chat to begin</span>
+                </div>
+                <div class="chat-window" id="chat-window">
+                    <div style="text-align: center; color: #888; margin-top: 50px; opacity: 0.7;">
+                        <img src="https://img.icons8.com/color/96/000000/whatsapp--v1.png" alt="WhatsApp" style="width: 80px; opacity: 0.6; margin-bottom: 10px;">
+                        <p>Welcome to your chat window.</p>
+                        <p>Click a user on the left to view their conversation.</p>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="message-input" placeholder="Type a message...">
+                    <button class="send-btn" id="send-message-btn" title="Send">→</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="taskbar" id="taskbar">
+        <div class="start">
+            <img src="https://img.icons8.com/color/48/000000/windows-10.png" alt="Start">
+        </div>
+        <input class="search" type="text" placeholder="Search the web and Windows">
+        <div class="taskbar-apps" id="taskbar-apps"></div>
+        <div class="taskbar-right">
+            <span class="time"></span>
+            <span class="date"></span>
+            <img src="https://img.icons8.com/ios-filled/24/ffffff/wifi.png" alt="WiFi">
+            <img src="https://img.icons8.com/ios-filled/24/ffffff/speaker.png" alt="Speaker">
+        </div>
+    </div>
+
+    <div id="visitor-widget" style="position:fixed;bottom:80px;right:20px;background:rgba(0,0,0,0.6);color:white;padding:12px 18px;border-radius:10px;font-family:Segoe UI;z-index:9999;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+        Total Visitors: <span id="visitor-count">Loading...</span>
+    </div>
+
+    <script>
+        function updateVisitorCount() {
+            fetch('/api/visitors')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('visitor-count').textContent = data.total.toLocaleString();
+            })
+            .catch(() => {
+                document.getElementById('visitor-count').textContent = 'Offline';
+            });
+        }
+
+        // Update on load
+        updateVisitorCount();
+
+        // Poll every 5 seconds for "live" feel
+        setInterval(updateVisitorCount, 5000);
+    </script>
+
+    <script src="SCRIPT_FOLDER/script.js"></script>
+    <script src="SCRIPT_FOLDER/whatsapp.js"></script>
+    <script src="SCRIPT_FOLDER/easter-egg.js"></script>
+    <script src="SCRIPT_FOLDER/effects.js"></script>
+
+</body>
+</html>

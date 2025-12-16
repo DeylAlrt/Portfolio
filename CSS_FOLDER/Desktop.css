@@ -1,0 +1,973 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100vw;
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;     
+    overflow: hidden;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #222;
+}
+
+.desktop-bg {
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+}
+
+.message-bubble > div:first-child {
+    white-space: pre-line;
+}
+
+.desktop-icons {
+    position: absolute;
+    left: 35px;
+    top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 29px;
+    z-index: 1;
+}
+
+.icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.icon img {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 4px;
+}
+
+.icon span {
+    color: #fff;
+    font-size: 15px;
+    text-shadow: 0 1px 4px #000;
+    margin-bottom: 2px;
+}
+
+.app-modal {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 7%;
+    left: 15%;
+    width: 72%;
+    height: 80%;
+    min-width: 380px;
+    min-height: 220px;
+    max-width: 100vw;
+    max-height: 100vh;
+    background: #222;
+    border: 2px solid #444;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.28);
+    z-index: 9999;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    resize: both;
+    overflow: hidden; /* important for sticky to work */
+}
+
+.app-modal.maximized {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    transform: none !important;
+    resize: none !important;
+}
+
+.app-titlebar {
+    background: #222;
+    padding: 8px 12px;
+    border-bottom: 1px solid #bfcbe6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: move;
+    font-weight: bold;
+    user-select: none;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+.app-titlebar-buttons button {
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: #6c7a99;
+    margin-left: 6px;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+.app-titlebar-buttons button:hover {
+    background: #e8eef7;
+}
+
+.app-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
+    height: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.notepad-area {
+    flex: 1 1 auto;
+    overflow: auto;
+    padding: 24px;
+    background: #222;
+    min-width: 0;
+    min-height: 0;
+    scrollbar-color: #444 #222; 
+    scrollbar-width: thin;     
+}
+
+.notepad-area::-webkit-scrollbar {
+    width: 8px;
+    background: #222;
+}
+.notepad-area::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+}
+.notepad-area::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.notepad-text {
+    background: #222;
+    color: #fff;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 1.15em;
+    outline: none;
+    border: none;
+    width: 100%;
+    min-height: 120px;
+    white-space: pre-wrap;
+    word-break: normal;
+    box-sizing: border-box;
+}
+
+.notepad-toolbar {
+    background: #222;
+    color: #fff;
+    padding: 0px 24px 8px 24px;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border-bottom: 1px solid #333;
+    font-family: inherit;
+    position: sticky;
+    top: 15px;
+    z-index: 999;
+}
+
+.notepad-statusbar {
+    background: #222;
+    color: #bbb;
+    font-size: 0.95em;
+    padding: 8px 24px;
+    border-top: 1px solid #333;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    font-family: inherit;
+    height: 36px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+}
+
+/* Responsive adjustments */
+@media (max-width: 700px) {
+    .app-modal {
+        min-width: 180px;
+        min-height: 120px;
+        width: 98vw;
+        left: 1vw;
+        top: 10px;
+        height: 90vh;
+    }
+    .app-titlebar,
+    .notepad-toolbar,
+    .notepad-statusbar {
+        padding-left: 8px;
+        padding-right: 8px;
+        font-size: 1em;
+    }
+    .notepad-area {
+        padding: 8px;
+    }
+}
+
+/* Resume Modal Styles */
+#resume-modal {
+    top: 8%;
+    left: 12%;
+    width: 76%;
+    height: 84%;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+}
+
+.resume-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.resume-topbar {
+    background: #f1f3f4;
+    padding: 10px 20px;
+    border-bottom: 1px solid #dadce0;
+    font-family: 'Google Sans', Arial, sans-serif;
+    font-size: 14px;
+    color: #3c4043;
+    display: flex;
+    align-items: center;
+}
+
+.resume-pdf-container {
+    flex: 1;
+    overflow: auto;
+    background: #f8f9fa;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.resume-pdf-container img {
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border-radius: 4px;
+}
+
+.resume-pdf-container::-webkit-scrollbar {
+    width: 12px;
+}
+.resume-pdf-container::-webkit-scrollbar-track { background: #f1f1f1; }
+.resume-pdf-container::-webkit-scrollbar-thumb { 
+    background: #dadce0; 
+    border-radius: 6px;
+}
+.resume-pdf-container::-webkit-scrollbar-thumb:hover { background: #c1c1c1; }
+
+.taskbar {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 48px;
+    background: rgba(30,30,30,0.92);
+    display: flex;
+    align-items: center;
+    z-index: 10000;
+}
+.start img {
+    width: 32px;
+    height: 32px;
+    margin-left: 12px;
+}
+.search {
+    margin-left: 18px;
+    width: 260px;
+    outline: none;
+    border-radius: 4px;
+    border: none;
+    padding: 8px;
+    font-size: 15px;
+}
+.taskbar-apps {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 12px;
+}
+.taskbar-app-btn {
+    background: #517dc0;
+    border: 1px solid #bfcbe6;
+    border-radius: 4px;
+    padding: 4px 16px;
+    font-size: 15px;
+    color: #222;
+    cursor: pointer;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: background 0.2s;
+}
+.taskbar-app-btn.active {
+    background: #dbe3f3;
+    border-color: #bfcbe6;
+}
+.taskbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #fff;
+    font-size: 15px;
+    margin-right: 18px;
+}
+.taskbar-right img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(2);
+}
+
+.icon-selected {
+    background: rgba(38, 116, 212, 0.45);
+    box-shadow: 0 0 0 2px #2674d4, 0 2px 8px rgba(0,0,0,0.18);
+}
+.icon-opened {
+    background: rgba(191, 227, 255, 0.85); 
+    box-shadow: 0 0 0 2px #bfe3ff, 0 2px 8px rgba(0,0,0,0.18);
+}
+
+.projects-explorer {
+    display: flex;
+    height: 100%;
+    background: #181818;
+    color: #fff;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.projects-sidebar {
+    width: 180px;
+    background: #202020;
+    border-right: 1px solid #222;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-section {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar-title {
+    font-size: 0.95em;
+    color: #bbb;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    font-size: 0.95em;
+    color: #ddd;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+.sidebar-link:hover {
+    background: #333;
+}
+
+.sidebar-link.active {
+    background: #333;
+    color: #fff;
+}
+
+.sidebar-separator {
+    border: none;
+    border-top: 1px solid #333;
+    margin: 8px 0;
+}
+
+.projects-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.projects-toolbar {
+    background: #202020;
+    color: #ddd;
+    padding: 6px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 0.95em;
+    border-bottom: 1px solid #333;
+}
+
+.projects-path {
+    padding: 8px 20px;
+    font-size: 0.9em;
+    color: #bbb;
+    border-bottom: 1px solid #333;
+}
+
+/* FORCE PROJECTS GRID TO LOOK PERFECT - NO MORE BIG SHIT */
+.projects-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)) !important;
+    gap: 24px 12px !important;
+    padding: 32px 40px !important;
+    overflow-y: auto !important;
+    justify-items: center !important;
+}
+
+.project-folder,
+.project-file {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100px !important;
+    text-align: center !important;
+    padding: 8px !important;
+    border-radius: 6px !important;
+    transition: background 0.2s !important;
+    text-decoration: none;
+}
+
+.project-folder:hover,
+.project-file:hover {
+    background: rgba(255,255,255,0.08) !important;
+}
+
+.project-folder img,
+.project-file img {
+    width: 56px !important;
+    height: 56px !important;
+    margin-bottom: 8px !important;
+}
+
+.project-file-name {
+    font-size: 0.8em !important;
+    color: #fff !important;
+    word-break: break-word !important;
+    max-width: 90px !important;
+    line-height: 1.2 !important;
+}
+
+.project-file-details {
+    font-size: 0.7em !important;
+    color: #aaa !important;
+    margin-top: 4px !important;
+}   
+
+:root {
+    --whatsapp-green: #075e54;
+    --whatsapp-green-light: #128c7e;
+    --whatsapp-bg: #eae6df;
+    --bubble-sent: #dcf8c6;
+    --bubble-received: #ffffff;
+    --text-color: #1f2833;
+    --font-modern: 'Poppins', 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+#whatsapp-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#whatsapp-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+#whatsapp-modal {
+    background: #f0f2f5;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    width: 90%;
+    max-width: 1000px;
+    height: 85vh;
+    max-height: 800px;
+    display: flex;
+    overflow: hidden;
+    transform: scale(0.95);
+    transition: transform 0.3s ease-in-out;
+    font-family: var(--font-modern);
+}
+
+#whatsapp-overlay.active #whatsapp-modal {
+    transform: scale(1);
+}
+
+.chat-sidebar {
+    width: 350px;
+    min-width: 280px;
+    background: #fff;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.sidebar-header {
+    background: var(--whatsapp-green);
+    color: #fff;
+    padding: 15px 20px;
+    font-size: 1.2em;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.chat-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.chat-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f2f2f2;
+    transition: background 0.1s;
+}
+
+.chat-item:hover {
+    background: #f5f5f5;
+}
+
+.chat-item.active {
+    background: #ebebeb;
+}
+
+.chat-pfp {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    margin-right: 12px;
+    flex-shrink: 0;
+    background: #ccc;
+}
+
+.chat-info {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.chat-name {
+    font-weight: 600;
+    color: var(--text-color);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-snippet {
+    font-size: 0.8em;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.chat-header {
+    background: #f0f2f5;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+    flex-shrink: 0;
+}
+
+.chat-user-name-display {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+.chat-window {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px 7%;
+    background-color: var(--whatsapp-bg);
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAACzXTVzAAAAAXNSR0IArs4c6QAAAD9JREFUGFdjZEACJgYGBhYF2D+gGgQYcE5MDIz/f/78+X9gQkL6T1RUVPB/ZmZmtmJ4R2hGNDg6OjpLAAApk8s8w+4JpgAAAABJRU5ErkJggg==');
+    background-repeat: repeat;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Chat Bubbles */
+.message-bubble {
+    max-width: 65%;
+    padding: 8px 10px 20px 10px;
+    border-radius: 8px;
+    position: relative;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
+    font-size: 0.9em;
+    line-height: 1.3;
+    word-wrap: break-word;
+}
+
+.message-bubble.sent {
+    background-color: var(--bubble-sent);
+    align-self: flex-end;
+    margin-left: auto;
+    border-top-right-radius: 0;
+}
+
+.message-bubble.received {
+    background-color: var(--bubble-received);
+    align-self: flex-start;
+    margin-right: auto;
+    border-top-left-radius: 0;
+}
+
+.chat-timestamp {
+    position: absolute;
+    right: 6px;
+    bottom: 4px;
+    font-size: 0.7em;
+    color: #777;
+}
+
+/* Chat Input */
+.chat-input-area {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background: #f0f2f5;
+    border-top: 1px solid #e0e0e0;
+    flex-shrink: 0;
+}
+
+.chat-input-area input {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+    font-size: 0.95em;
+    margin: 0 10px;
+    background: #fff;
+    font-family: inherit;
+}
+
+.send-btn {
+    background: none;
+    border: none;
+    color: var(--whatsapp-green-light);
+    font-size: 1.5em;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.send-btn:hover {
+    color: var(--whatsapp-green);
+}
+
+/* --- RESPONSIVENESS (Mobile View) --- */
+@media (max-width: 900px) {
+    #whatsapp-modal {
+        width: 98%;
+        height: 98vh;
+        max-width: none;
+        max-height: none;
+        margin: 0;
+    }
+    .chat-sidebar {
+        width: 30%;
+        min-width: 100px;
+    }
+}
+
+@media (max-width: 600px) {
+    .chat-sidebar {
+        width: 100%;
+        border-right: none;
+    }
+    .chat-main {
+        display: none; /* Hide chat main initially */
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+        background: var(--whatsapp-bg);
+    }
+
+    /* To show the chat when a user is selected on mobile */
+    .chat-main.active-mobile {
+        display: flex;
+    }
+
+    .chat-header {
+        background: var(--whatsapp-green); /* Make header green on mobile */
+        color: white;
+        border-bottom: none;
+        /* Add back button for mobile view */
+    }
+    .chat-header .chat-user-name-display {
+        color: white;
+    }
+}
+
+#resume-modal {
+    position: absolute;
+    top: 8%;
+    left: 12%;
+    width: 76%;
+    height: 84%;
+    background: white;
+    border: 2px solid #444;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.28);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    resize: both;
+}
+
+.Real-resume {
+    width: 100%;
+    height: 100%;
+    box-shadow: none;
+    border-radius: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    overflow: hidden;
+    padding: 0;
+    background: #f8f9fa;
+}
+
+.Real-resume img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#resume-modal .app-titlebar {
+    background: rgb(34, 34, 34);
+    color: white;
+}
+
+.resume-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.resume-topbar {
+    background: #f1f3f4;
+    padding: 12px 24px;
+    border-bottom: 1px solid #dadce0;
+    font-size: 14px;
+    color: #3c4043;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.resume-topbar img {
+    width: 16px;
+    height: 16px;
+}
+
+.resume-pdf-container {
+    flex: 1;
+    overflow: auto;
+    background: #f8f9fa;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.resume-pdf-container img {
+    max-width: 100%;
+    height: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border-radius: 4px;
+}
+
+.resume-pdf-container::-webkit-scrollbar {
+    width: 12px;
+}
+.resume-pdf-container::-webkit-scrollbar-track { background: #f1f1f1; }
+.resume-pdf-container::-webkit-scrollbar-thumb { 
+    background: #dadce0; 
+    border-radius: 6px;
+}
+.resume-pdf-container::-webkit-scrollbar-thumb:hover { background: #c1c1c1; }
+
+/* ============== FINAL PROJECTS WINDOW FIX - LOOKS 100% CLEAN ============== */
+.projects-modal-custom {
+    position: absolute;
+    top: 5%;
+    left: 10%;
+    width: 80%;
+    height: 85%;
+    background: #181818;
+    border: 2px solid #444;
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    resize: none !important;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.projects-modal-custom.maximized {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+}
+
+#projects-titlebar { cursor: move; }
+
+.projects-topbar {
+    background: #202020;
+    padding: 8px 20px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    font-size: 0.95em;
+    color: #ddd;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.projects-path {
+    font-weight: 600;
+    color: #fff;
+}
+
+.projects-toolbar-left {
+    display: flex;
+    gap: 16px;
+    margin-left: 20px;
+}
+
+.projects-status-info {
+    margin-left: auto;
+    display: flex;
+    gap: 20px;
+    color: #bbb;
+    font-size: 0.9em;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 24px 12px;
+    padding: 32px 40px;
+    overflow-y: auto;
+    justify-items: center;
+}
+
+.project-folder, .project-file {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+    text-align: center;
+    padding: 8px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.project-folder:hover, .project-file:hover {
+    background: rgba(255,255,255,0.08);
+}
+
+.project-folder img, .project-file img {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 8px;
+}
+
+.project-file-name {
+    font-size: 0.8em;
+    color: #fff;
+    word-break: break-word;
+    max-width: 90px;
+    line-height: 1.2;
+}
+
+.project-file-details {
+    font-size: 0.7em;
+    color: #aaa;
+    margin-top: 4px;
+}
+
+/* Responsive */
+@media (max-width: 1000px) {
+    .projects-topbar { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .projects-toolbar-left, .projects-status-info { margin-left: 0; }
+}
+@media (min-width: 1400px) {
+    .projects-modal-custom { width: 75%; height: 88%; left: 12.5%; top: 6%; }
+}
+
+#resume-modal.maximized {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+}

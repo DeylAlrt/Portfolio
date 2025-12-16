@@ -11,26 +11,37 @@ const dataFile = path.join(__dirname, 'visitors.json');
 // Load count from file
 if (fs.existsSync(dataFile)) {
   visitorCount = JSON.parse(fs.readFileSync(dataFile)).count;
-} else {
-  fs.writeFileSync(dataFile, JSON.stringify({ count: 0 }));
 }
 
-// Serve your static files (Index.html, Desktop.html, CSS, JS folders)
+// Serve static files from root (your HTML, CSS, JS folders, images, everything)
 app.use(express.static(__dirname));
 
-// API to get current count
+// API to get visitor count
 app.get('/api/visitors', (req, res) => {
   res.json({ total: visitorCount });
 });
 
-// Increment count on every visit to root (or any page)
+// Catch-all route — serve Index.html for root, Desktop.html if needed
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'Index.html'));
+});
+
+// Optional: if you want /desktop to go straight to Desktop.html
+app.get('/desktop', (req, res) => {
+  res.sendFile(path.join(__dirname, 'Desktop.html'));
+});
+
+// Increment visitor count on every request (except API calls to avoid double count)
 app.use((req, res, next) => {
-  visitorCount++;
-  fs.writeFileSync(dataFile, JSON.stringify({ count: visitorCount }));
+  if (!req.path.startsWith('/api')) {
+    visitorCount++;
+    fs.writeFileSync(dataFile, JSON.stringify({ count: visitorCount }));
+  }
   next();
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Server live on port ${PORT}`);
+  console.log(`Visit: https://your-site.onrender.com`);
   console.log(`Current visitors: ${visitorCount}`);
 });

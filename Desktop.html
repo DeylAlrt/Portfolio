@@ -229,29 +229,6 @@ Experiences:
         </div>
     </div>
 
-    <div id="visitor-widget" style="position:fixed;bottom:80px;right:20px;background:rgba(0,0,0,0.6);color:white;padding:12px 18px;border-radius:10px;font-family:Segoe UI;z-index:9999;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,0.3);">
-        Total Visitors: <span id="visitor-count">Loading...</span>
-    </div>
-
-    <script>
-        function updateVisitorCount() {
-            fetch('/api/visitors')
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('visitor-count').textContent = data.total.toLocaleString();
-            })
-            .catch(() => {
-                document.getElementById('visitor-count').textContent = 'Offline';
-            });
-        }
-
-        // Update on load
-        updateVisitorCount();
-
-        // Poll every 5 seconds for "live" feel
-        setInterval(updateVisitorCount, 5000);
-    </script>
-
     <script src="SCRIPT_FOLDER/script.js"></script>
     <script src="SCRIPT_FOLDER/whatsapp.js"></script>
     <script src="SCRIPT_FOLDER/easter-egg.js"></script>

@@ -3,11 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchBar = document.querySelector('.search');
     if (!searchBar) return;
 
-    // Real XP Critical Stop sound
+    // Load XP error sound
     const xpSound = new Audio('https://cdn.freesound.org/previews/639/639697_5674468-lq.mp3');
     xpSound.preload = 'auto';
 
-    // Softer, creepier shake (feels like the box is glitching, not having a stroke)
+    // Shake animation
     const shakeStyle = document.createElement('style');
     shakeStyle.textContent = `
         @keyframes virusShake {
@@ -82,9 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     box.style.top = `${top}vh`;
                     document.body.appendChild(box);
 
-                    // Fake OK button does nothing
+                    // Fake OK button
                     box.querySelector('button').onclick = (e) => e.preventDefault();
-                }, i * 300); // staggered spawn
+                }, i * 300); 
             }
 
             // Auto cleanup after 12 seconds

@@ -62,9 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
         icon.addEventListener('mousedown', function(e) {
             if (e.button !== 0) return;
 
-            // Prevent dragging "About me" icon
-            const label = icon.querySelector('span').textContent.trim();
-            if (label === 'About me') return;
 
             const rect = icon.getBoundingClientRect();
             const offsetX = e.clientX - rect.left;
@@ -456,27 +453,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // add this in script.js
-    icons.forEach(icon => {
-        icon.draggable = true;
-        icon.addEventListener('dragstart', e => {
-            e.dataTransfer.setData('text/plain', icon.querySelector('span').textContent);
-            draggingIcon = icon;
-        });
-    });
-
-    recycleIcon.addEventListener('dragover', e => e.preventDefault());
-    recycleIcon.addEventListener('drop', e => {
-        if (draggingIcon && draggingIcon !== recycleIcon) {
-            trashItems.push({
-                name: draggingIcon.querySelector('span').textContent,
-                icon: draggingIcon.querySelector('img').src
-            });
-            draggingIcon.style.display = 'none';
-            updateTrashCount();
-        }
-    });
-
     // save positions
     function saveDesktop() {
         const layout = icons.map(icon => ({
@@ -494,15 +470,5 @@ document.addEventListener('DOMContentLoaded', function() {
         const saved = localStorage.getItem('daleDesktop');
         if (saved) { /* restore positions + hidden icons */ }
     }
-    
-    // shake animation
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes shake {
-            0%,100% { transform: translateX(0); }
-            10%,30%,50%,70%,90% { transform: translateX(-10px); }
-            20%,40%,60%,80% { transform: translateX(10px); }
-        }
-    `;
-    document.head.appendChild(style);
+
 });

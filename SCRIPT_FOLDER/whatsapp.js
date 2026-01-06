@@ -14,7 +14,7 @@ const contactIcon = document.getElementById('contact-icon');
         dale: {
             id: 'dale',
             name: 'Dale G. Alerta (You)',
-            pfp: 'https://img.icons8.com/color/96/000000/guest-male--v1.png',
+            pfp: 'https://ik.imagekit.io/mpojoducq/Main%20Page%20Img?updatedAt=1752223341165',
             snippet: 'Hey there! I’m Dale Alerta...',
             messages: [
                 {

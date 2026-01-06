@@ -1,10 +1,10 @@
-// easter-egg.js — DALE ALERTA = FULL VIRUS PANIC MODE (2025 EDITION)
+// easter-egg.js
 document.addEventListener('DOMContentLoaded', () => {
     const searchBar = document.querySelector('.search');
     if (!searchBar) return;
 
     // Load XP error sound
-    const xpSound = new Audio('https://cdn.freesound.org/previews/639/639697_5674468-lq.mp3');
+    const xpSound = new Audio('https://archive.org/download/windowsxpstartup_201910/Windows%20XP%20Critical%20Stop.mp3');
     xpSound.preload = 'auto';
 
     // Shake animation
@@ -93,7 +93,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 searchBar.value = '';
                 searchBar.style.cssText = '';
                 triggered = false;
-            }, 5000);
+            }, 12000);
+        }
+
+        const text = this.value.trim().toLowerCase();
+        if (text === 'kneegrew') {
+
+            const img = document.createElement('img');
+            img.src = 'https://media.tenor.com/3M-cxtkfFv8AAAAM/pray-crying.gif';
+            img.style.position = 'fixed';
+            img.style.top = '50%';
+            img.style.left = '50%';
+            img.style.transform = 'translate(-50%, -50%)';
+            img.style.maxWidth = '70%';
+            img.style.maxHeight = '70%';
+            img.style.zIndex = '999999';
+            img.style.borderRadius = '16px';
+            img.style.boxShadow = '0 0 40px rgba(0,0,0,0.8)';
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.6s ease-out';
+            
+            document.body.appendChild(img);
+            
+            // Fade in quick
+            setTimeout(() => {
+                img.style.opacity = '1';
+            }, 0);
+            
+            // Stay for 2 seconds then fade away
+            setTimeout(() => {
+                img.style.opacity = '0';
+                
+                // Delete it after fade finishes
+                setTimeout(() => {
+                    img.remove();
+                }, 9000);
+            }, 3000);
+            
+            this.value = '';
         }
     });
 });

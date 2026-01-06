@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let isAppMinimized = false;
     let dragOffsetX = 0, dragOffsetY = 0, draggingApp = false;
 
-    // --- Desktop Icon Grid ---
+    // Desktop Icon Grid for draagging icons
     const icons = Array.from(document.querySelectorAll('.desktop-icons .icon'));
     const gridX = 32; // left margin
     const gridY = 32; // top margin
@@ -44,6 +44,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Track grid occupancy
     let gridMap = Array(cols * rows).fill(null);
+
+    // Recycle Bin logic
+    let trashItems = [];
+    const recycleIcon = document.getElementById('recycle-icon');
+    const recycleImg = document.getElementById('recycle-img');
+    const recycleModal = document.getElementById('recycle-modal');
+    const trashCount = document.getElementById('trash-count');
+    const trashItemsContainer = document.getElementById('trash-items');
+    const emptyBinBtn = document.getElementById('empty-bin');
+    const emptyMsg = document.getElementById('empty-trash-msg');
+
+    const recycleTitlebar = document.getElementById('recycle-titlebar');
+    const recycleMinimize = document.getElementById('recycle-minimize');
+    const recycleMaximize = document.getElementById('recycle-maximize');
+    const recycleClose = document.getElementById('recycle-close');
+    let isRecycleMaximized = false;
+    let recycleLastRect = null;
+
+    const emptyBinSrc = 'https://img.icons8.com/?size=100&id=LjNe156kndXS&format=png&color=000000';
+    const fullBinSrc = 'https://img.icons8.com/?size=100&id=8usOzL0PIrcw&format=png&color=000000';
 
     // Initial placement
     icons.forEach((icon, i) => {
@@ -62,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
         icon.addEventListener('mousedown', function(e) {
             if (e.button !== 0) return;
 
-
             const rect = icon.getBoundingClientRect();
             const offsetX = e.clientX - rect.left;
             const offsetY = e.clientY - rect.top;
@@ -73,33 +92,58 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 let gridCol = Math.max(0, Math.min(cols - 1, Math.round((x - gridX) / cellWidth)));
                 let gridRow = Math.max(0, Math.min(rows - 1, Math.round((y - gridY) / cellHeight)));
-                let gridIndex = gridRow + gridCol * rows;
 
-                // Only snap if cell is empty or it's the icon's own cell
-                if (gridMap[gridIndex] === null || gridMap[gridIndex] === icon) {
-                    icon.style.zIndex = 1000;
-                    icon.style.left = `${gridX + gridCol * cellWidth}px`;
-                    icon.style.top = `${gridY + gridRow * cellHeight}px`;
-                    icon.dataset.gridCol = gridCol;
-                    icon.dataset.gridRow = gridRow;
-                }
+                icon.style.zIndex = 1000;
+                icon.style.left = `${gridX + gridCol * cellWidth}px`;
+                icon.style.top = `${gridY + gridRow * cellHeight}px`;
             }
 
             function onMouseUp() {
-                // Update gridMap
-                // Remove icon from previous cell
-                let prevCol = parseInt(icon.dataset.gridCol);
-                let prevRow = parseInt(icon.dataset.gridRow);
-                gridMap[prevRow + prevCol * rows] = null;
-
-                // Place icon in new cell
-                let newCol = Math.round((parseInt(icon.style.left) - gridX) / cellWidth);
-                let newRow = Math.round((parseInt(icon.style.top) - gridY) / cellHeight);
-                icon.dataset.gridCol = newCol;
-                icon.dataset.gridRow = newRow;
-                gridMap[newRow + newCol * rows] = icon;
-
                 icon.style.zIndex = '';
+
+                // Check if dropped over Recycle Bin (using center of icon)
+                const recycleRect = recycleIcon.getBoundingClientRect();
+                const iconRect = icon.getBoundingClientRect();
+                const iconCenterX = iconRect.left + iconRect.width / 2;
+                const iconCenterY = iconRect.top + iconRect.height / 2;
+
+                const label = icon.querySelector('span').textContent.trim();
+
+                if (iconCenterX > recycleRect.left && 
+                    iconCenterX < recycleRect.right && 
+                    iconCenterY > recycleRect.top && 
+                    iconCenterY < recycleRect.bottom &&
+                    label !== 'Recycle Bin') {
+
+                    // DELETE: hide icon, add to trash
+                    icon.style.display = 'none';
+                    trashItems.push({
+                        name: label,
+                        imgSrc: icon.querySelector('img').src,
+                        index: icons.indexOf(icon)
+                    });
+                    updateRecycleBin();
+
+                } else {
+                    // Normal snap to grid
+                    let prevCol = parseInt(icon.dataset.gridCol);
+                    let prevRow = parseInt(icon.dataset.gridRow);
+                    if (!isNaN(prevCol) && !isNaN(prevRow)) {
+                        gridMap[prevRow + prevCol * rows] = null;
+                    }
+
+                    let newCol = Math.round((parseInt(icon.style.left) - gridX) / cellWidth);
+                    let newRow = Math.round((parseInt(icon.style.top) - gridY) / cellHeight);
+                    newCol = Math.max(0, Math.min(cols - 1, newCol));
+                    newRow = Math.max(0, Math.min(rows - 1, newRow));
+
+                    icon.style.left = `${gridX + newCol * cellWidth}px`;
+                    icon.style.top = `${gridY + newRow * cellHeight}px`;
+                    icon.dataset.gridCol = newCol;
+                    icon.dataset.gridRow = newRow;
+                    gridMap[newRow + newCol * rows] = icon;
+                }
+
                 document.removeEventListener('mousemove', onMouseMove);
                 document.removeEventListener('mouseup', onMouseUp);
             }
@@ -108,6 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.addEventListener('mouseup', onMouseUp);
         });
     });
+            
 
     // Highlight on single click, bright highlight on double click
     icons.forEach(icon => {
@@ -130,6 +175,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (label === 'Projects') {
                 openProjectsWindow();
             }
+            if (label === 'Recycle Bin') {
+                recycleModal.style.display = 'block';
+                bringToFront(recycleModal);
+                updateRecycleBin();
+            }
+
         });
 
         document.body.addEventListener('click', function(e) {
@@ -139,10 +190,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // --- App Modal Logic (unchanged) ---
+    // App Modal Logic  
     let lastModalRect = null;
 
-    // Helper to bring a modal to front
+    // Bring a modal to front
     function bringToFront(modal) {
         // Find the highest z-index among modals
         const modals = document.querySelectorAll('.app-modal');
@@ -269,7 +320,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('mouseup', onMouseUp);
     });
 
-    // --- Projects Modal Logic ---
+    // Projects Modal Logic 
     const projectsIcon = document.getElementById('projects-icon');
     const projectsModal = document.getElementById('projects-modal');
     const projectsTitlebar = document.getElementById('projects-titlebar');
@@ -348,23 +399,25 @@ document.addEventListener('DOMContentLoaded', function() {
         if (btn) btn.remove();
     };
 
-    projectsTitlebar.addEventListener('mousedown', function(e) {
-        if (isProjectsMaximized) return;
-        draggingProjects = true;
-        const rect = projectsModal.getBoundingClientRect();
-        dragOffsetX2 = e.clientX - rect.left;
-        dragOffsetY2 = e.clientY - rect.top;
+    recycleTitlebar.addEventListener('mousedown', function(e) {
+        // Ignore if clicked on button
+        if (e.target.tagName === 'BUTTON') return;
+
+        if (isRecycleMaximized) return;
+        let draggingRecycle = true;
+        const rect = recycleModal.getBoundingClientRect();
+        let dragOffsetX = e.clientX - rect.left;
+        let dragOffsetY = e.clientY - rect.top;
         document.body.style.userSelect = 'none';
 
         function onMouseMove(ev) {
-            if (!draggingProjects || isProjectsMaximized) return;
-            projectsModal.style.left = (ev.clientX - dragOffsetX2) + 'px';
-            projectsModal.style.top = (ev.clientY - dragOffsetY2) + 'px';
-            projectsModal.style.transform = 'none';
+            if (!draggingRecycle || isRecycleMaximized) return;
+            recycleModal.style.left = (ev.clientX - dragOffsetX) + 'px';
+            recycleModal.style.top = (ev.clientY - dragOffsetY) + 'px';
         }
 
         function onMouseUp() {
-            draggingProjects = false;
+            draggingRecycle = false;
             document.body.style.userSelect = '';
             document.removeEventListener('mousemove', onMouseMove);
             document.removeEventListener('mouseup', onMouseUp);
@@ -374,14 +427,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('mouseup', onMouseUp);
     });
 
-    // Also bring to front when clicking on the modal
-    [appModal, projectsModal].forEach(modal => {
-        modal.addEventListener('mousedown', function() {
-            bringToFront(modal);
-        });
-    });
-
-        // === RESUME DOUBLE CLICK ===
+    // RESUME
     document.querySelectorAll('.icon').forEach(icon => {
         if (icon.querySelector('span')?.textContent.trim() === 'Resume') {
             icon.addEventListener('dblclick', () => {
@@ -398,60 +444,40 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('resume-modal').style.display = 'none';
         });
 
-        // ============= RESUME WINDOW CONTROLS (was missing) =============
+    // RESUME WINDOW CONTROLS
     const resumeModal = document.getElementById('resume-modal');
     const resumeMinimize = document.getElementById('resume-minimize');
     const resumeMaximize = document.getElementById('resume-maximize');
     const resumeClose = document.getElementById('resume-close');
 
     let isResumeMaximized = false;
-
-    resumeClose.onclick = () => resumeModal.style.display = 'none';
-
-    resumeMinimize.onclick = () => {
-        resumeModal.style.display = 'none';
-        addTaskbarIcon('resume', 'Resume', 'https://img.icons8.com/color/48/chrome--v1.png');
-    };
+    let resumeLastRect = null;  // add this var here
 
     resumeMaximize.onclick = () => {
         if (!isResumeMaximized) {
+            // Save current pos/size before max
+            resumeLastRect = {
+                top: resumeModal.style.top || '10%',    
+                left: resumeModal.style.left || '15%',
+                width: resumeModal.style.width || '70%',
+                height: resumeModal.style.height || '80%'
+            };
             resumeModal.classList.add('maximized');
             isResumeMaximized = true;
         } else {
             resumeModal.classList.remove('maximized');
+            if (resumeLastRect) {
+                resumeModal.style.top = resumeLastRect.top;
+                resumeModal.style.left = resumeLastRect.left;
+                resumeModal.style.width = resumeLastRect.width;
+                resumeModal.style.height = resumeLastRect.height;
+            }
             isResumeMaximized = false;
         }
     };
 
     // make titlebar draggable
     makeDraggable(resumeModal, document.getElementById('resume-titlebar'));
-
-        // ========= DALE ALERTA = BRUH (NO CORS, NO BULLSHIT, WORKS 1000% OF THE TIME) =========
-    const searchBar = document.querySelector('.search');
-    if (searchBar) {
-        searchBar.addEventListener('input', function() {
-            const value = this.value.trim().toLowerCase();
-            if (value === 'dale alerta' || value === 'dalealerta') {
-                // instant visual chaos
-                this.value = 'BRUH NIGGA 😭🔥';
-                this.style.cssText = 'background:#ff0000 !important; color:white !important; font-size:22px !important; font-weight:900 !important; text-align:center !important; border:4px solid yellow !important;';
-
-                // this sound is hosted on a site that allows CORS — literally cannot be blocked
-                const bruh = new Audio('https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3');
-                bruh.volume = 1;
-                bruh.play();
-
-                // shake the whole fucking screen
-                document.body.style.animation = 'shake 0.5s';
-                
-                setTimeout(() => {
-                    this.value = '';
-                    this.style.cssText = '';
-                    document.body.style.animation = '';
-                }, 3000);
-            }
-        });
-    }
 
     // save positions
     function saveDesktop() {
@@ -471,4 +497,61 @@ document.addEventListener('DOMContentLoaded', function() {
         if (saved) { /* restore positions + hidden icons */ }
     }
 
+    function updateRecycleBin() {
+        trashCount.textContent = trashItems.length;
+
+        if (trashItems.length > 0) {
+            recycleImg.src = fullBinSrc;
+            emptyMsg.style.display = 'none';
+            trashItemsContainer.innerHTML = '';
+            trashItems.forEach(item => {
+                const trashDiv = document.createElement('div');
+                trashDiv.className = 'icon';
+                trashDiv.innerHTML = `<img src="${item.imgSrc}" style="width:40px;height:40px"><span>${item.name}</span>`;
+                trashItemsContainer.appendChild(trashDiv);
+            });
+        } else {
+            recycleImg.src = emptyBinSrc;
+            emptyMsg.style.display = 'block';
+            trashItemsContainer.innerHTML = '';
+        }
+    }
+
+    emptyBinBtn.onclick = () => {
+        // Restore all icons
+        trashItems.forEach(item => {
+            icons[item.index].style.display = '';
+        });
+        trashItems = [];
+        updateRecycleBin();
+    };
+
+    // Recycle Bin modal controls
+        // Make titlebar draggable (ignore clicks on buttons)
+    recycleTitlebar.addEventListener('mousedown', function(e) {
+        if (e.target.closest('button')) return;  // ignore if button or inside button
+
+        if (isRecycleMaximized) return;
+        let draggingRecycle = true;
+        const rect = recycleModal.getBoundingClientRect();
+        let dragOffsetX = e.clientX - rect.left;
+        let dragOffsetY = e.clientY - rect.top;
+        document.body.style.userSelect = 'none';
+
+        function onMouseMove(ev) {
+            if (!draggingRecycle || isRecycleMaximized) return;
+            recycleModal.style.left = (ev.clientX - dragOffsetX) + 'px';
+            recycleModal.style.top = (ev.clientY - dragOffsetY) + 'px';
+        }
+
+        function onMouseUp() {
+            draggingRecycle = false;
+            document.body.style.userSelect = '';
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        }
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    });
 });

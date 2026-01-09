@@ -288,7 +288,7 @@ body, html {
     background: rgba(30,30,30,0.92);
     display: flex;
     align-items: center;
-    z-index: 10000;
+    z-index: 99999999;
 }
 .start img {
     width: 32px;

@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateDateTimeUAE();
     setInterval(updateDateTimeUAE, 1000);
 
-    // --- App Modal Logic ---
+    // App Modal Logic
     const appModal = document.getElementById('app-modal');
     const appTitlebar = document.getElementById('app-titlebar');
     const appMinimize = document.getElementById('app-minimize');
@@ -175,12 +175,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (label === 'Projects') {
                 openProjectsWindow();
             }
-            if (label === 'Recycle Bin') {
-                recycleModal.style.display = 'block';
-                bringToFront(recycleModal);
-                updateRecycleBin();
-            }
-
         });
 
         document.body.addEventListener('click', function(e) {
@@ -320,6 +314,101 @@ document.addEventListener('DOMContentLoaded', function() {
         document.addEventListener('mouseup', onMouseUp);
     });
 
+// --- Recycle Bin Modal Controls ---
+let isRecycleOpen = false;
+let isRecycleMinimized = false;
+
+function openRecycleWindow() {
+    recycleModal.style.display = 'block';
+    recycleModal.classList.remove('minimized', 'maximized');
+    bringToFront(recycleModal);
+    updateRecycleBin();
+    addRecycleTaskbarButton();
+    isRecycleOpen = true;
+    isRecycleMinimized = false;
+    isRecycleMaximized = false;
+}
+
+function addRecycleTaskbarButton() {
+    let btn = document.getElementById('taskbar-btn-recycle');
+    if (!btn) {
+        btn = document.createElement('button');
+        btn.className = 'taskbar-app-btn active';
+        btn.id = 'taskbar-btn-recycle';
+        btn.textContent = '🗑 Recycle Bin';
+        btn.onclick = () => {
+            if (isRecycleMinimized) {
+                recycleModal.classList.remove('minimized');
+                recycleModal.style.display = 'block';
+                isRecycleMinimized = false;
+            } else {
+                recycleModal.classList.add('minimized');
+                recycleModal.style.display = 'none';
+                isRecycleMinimized = true;
+            }
+        };
+        taskbarApps.appendChild(btn);
+    } else {
+        btn.classList.add('active');
+        recycleModal.style.display = 'block';
+        recycleModal.classList.remove('minimized');
+        isRecycleMinimized = false;
+    }
+}
+
+    // Minimize
+    recycleMinimize.onclick = () => {
+        recycleModal.classList.add('minimized');
+        recycleModal.style.display = 'none';
+        isRecycleMinimized = true;
+    };
+
+    // Maximize/Restore
+    recycleMaximize.onclick = () => {
+        if (!isRecycleMaximized) {
+            recycleLastRect = {
+                top: recycleModal.style.top || '10%',
+                left: recycleModal.style.left || '15%',
+                width: recycleModal.style.width || '70%',
+                height: recycleModal.style.height || '80%'
+            };
+            recycleModal.classList.add('maximized');
+            isRecycleMaximized = true;
+        } else {
+            recycleModal.classList.remove('maximized');
+            if (recycleLastRect) {
+                recycleModal.style.top = recycleLastRect.top;
+                recycleModal.style.left = recycleLastRect.left;
+                recycleModal.style.width = recycleLastRect.width;
+                recycleModal.style.height = recycleLastRect.height;
+            }
+            isRecycleMaximized = false;
+        }
+    };
+
+    // Close
+    recycleClose.onclick = () => {
+        recycleModal.style.display = 'none';
+        isRecycleOpen = false;
+        isRecycleMinimized = false;
+        isRecycleMaximized = false;
+        let btn = document.getElementById('taskbar-btn-recycle');
+        if (btn) btn.remove();
+    };
+
+    // Make Recycle Bin draggable
+    makeDraggable(recycleModal, recycleTitlebar);
+
+    // Hook up desktop icon dblclick to open Recycle Bin
+    document.querySelectorAll('.icon').forEach(icon => {
+        if (icon.querySelector('span')?.textContent.trim() === 'Recycle Bin') {
+            icon.addEventListener('dblclick', () => {
+                openRecycleWindow();
+            });
+        }
+    });
+
+
     // Projects Modal Logic 
     const projectsIcon = document.getElementById('projects-icon');
     const projectsModal = document.getElementById('projects-modal');
@@ -328,6 +417,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const projectsMaximize = document.getElementById('projects-maximize');
     const projectsClose = document.getElementById('projects-close');
     let draggingProjects = false, dragOffsetX2 = 0, dragOffsetY2 = 0;
+
+    makeDraggable(projectsModal, projectsTitlebar);
 
     function addProjectsTaskbarButton() {
         let btn = document.getElementById('taskbar-btn-projects');
@@ -399,34 +490,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (btn) btn.remove();
     };
 
-    recycleTitlebar.addEventListener('mousedown', function(e) {
-        // Ignore if clicked on button
-        if (e.target.tagName === 'BUTTON') return;
-
-        if (isRecycleMaximized) return;
-        let draggingRecycle = true;
-        const rect = recycleModal.getBoundingClientRect();
-        let dragOffsetX = e.clientX - rect.left;
-        let dragOffsetY = e.clientY - rect.top;
-        document.body.style.userSelect = 'none';
-
-        function onMouseMove(ev) {
-            if (!draggingRecycle || isRecycleMaximized) return;
-            recycleModal.style.left = (ev.clientX - dragOffsetX) + 'px';
-            recycleModal.style.top = (ev.clientY - dragOffsetY) + 'px';
-        }
-
-        function onMouseUp() {
-            draggingRecycle = false;
-            document.body.style.userSelect = '';
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
-        }
-
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
-    });
-
     // RESUME
     document.querySelectorAll('.icon').forEach(icon => {
         if (icon.querySelector('span')?.textContent.trim() === 'Resume') {
@@ -434,7 +497,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const resume = document.getElementById('resume-modal');
                 resume.style.display = 'block';
                 bringToFront(resume);
-                addTaskbarButton('Resume - Google Chrome', resume);
+                addTaskbarButton('🌎 Resume - Google Chrome', resume);
             });
         }
     });
@@ -475,6 +538,41 @@ document.addEventListener('DOMContentLoaded', function() {
             isResumeMaximized = false;
         }
     };
+
+    // Make a modal draggable by its titlebar
+    function makeDraggable(modal, titlebar) {
+        if (!modal || !titlebar) return;
+        
+        let isDragging = false;
+        let offsetX = 0;
+        let offsetY = 0;
+        
+        titlebar.addEventListener('mousedown', function(e) {
+            if (e.target.closest('button')) return; // Don't drag if clicking buttons
+            
+            isDragging = true;
+            const rect = modal.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+            document.body.style.userSelect = 'none';
+            
+            function onMouseMove(ev) {
+                if (!isDragging) return;
+                modal.style.left = (ev.clientX - offsetX) + 'px';
+                modal.style.top = (ev.clientY - offsetY) + 'px';
+            }
+            
+            function onMouseUp() {
+                isDragging = false;
+                document.body.style.userSelect = '';
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+            }
+            
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', onMouseUp);
+        });
+    }
 
     // make titlebar draggable
     makeDraggable(resumeModal, document.getElementById('resume-titlebar'));
@@ -525,33 +623,4 @@ document.addEventListener('DOMContentLoaded', function() {
         trashItems = [];
         updateRecycleBin();
     };
-
-    // Recycle Bin modal controls
-        // Make titlebar draggable (ignore clicks on buttons)
-    recycleTitlebar.addEventListener('mousedown', function(e) {
-        if (e.target.closest('button')) return;  // ignore if button or inside button
-
-        if (isRecycleMaximized) return;
-        let draggingRecycle = true;
-        const rect = recycleModal.getBoundingClientRect();
-        let dragOffsetX = e.clientX - rect.left;
-        let dragOffsetY = e.clientY - rect.top;
-        document.body.style.userSelect = 'none';
-
-        function onMouseMove(ev) {
-            if (!draggingRecycle || isRecycleMaximized) return;
-            recycleModal.style.left = (ev.clientX - dragOffsetX) + 'px';
-            recycleModal.style.top = (ev.clientY - dragOffsetY) + 'px';
-        }
-
-        function onMouseUp() {
-            draggingRecycle = false;
-            document.body.style.userSelect = '';
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
-        }
-
-        document.addEventListener('mousemove', onMouseMove);
-        document.addEventListener('mouseup', onMouseUp);
-    });
 });

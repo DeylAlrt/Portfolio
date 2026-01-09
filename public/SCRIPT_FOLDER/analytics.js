@@ -1,5 +1,5 @@
 async function loadAnalytics() {
-  const res = await fetch('/api/analytics');
+  const res = await fetch('/api/visits');
   const data = await res.json();
 
   document.getElementById('live-users').innerText =

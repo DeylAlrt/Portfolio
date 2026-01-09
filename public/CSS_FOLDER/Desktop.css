@@ -710,7 +710,7 @@ body, html {
     color: var(--whatsapp-green);
 }
 
-/* --- RESPONSIVENESS (Mobile View) --- */
+/* RESPONSIVENESS (Mobile View)*/
 @media (max-width: 900px) {
     #whatsapp-modal {
         width: 98%;

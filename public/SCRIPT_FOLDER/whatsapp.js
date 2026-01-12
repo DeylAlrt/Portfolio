@@ -226,7 +226,16 @@ function mockReply(chatId, sentText) {
 }
 
 function openWhatsAppModal() {
+
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
     overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.style.zIndex = '20000';
     void overlay.offsetWidth;
     overlay.classList.add('active');
     renderChatList();
@@ -235,6 +244,8 @@ function openWhatsAppModal() {
     const projectsModal = document.getElementById('projects-modal');
     if (appModal) appModal.style.display = 'none';
     if (projectsModal) projectsModal.style.display = 'none';
+    // add taskbar button if helper available
+    if (typeof window.addTaskbarButton === 'function') window.addTaskbarButton('📞 Contact','taskbar-btn-contact','whatsapp-overlay');
 }
 
 function closeWhatsAppModal() {

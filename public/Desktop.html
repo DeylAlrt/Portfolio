@@ -31,6 +31,10 @@
             <img id="recycle-img" src="https://img.icons8.com/?size=100&id=LjNe156kndXS&format=png&color=000000" alt="Recycle Bin">
             <span>Recycle Bin</span>
         </div>
+        <div class="icon" id="github-icon">
+            <img src="https://img.icons8.com/fluency/96/000000/github.png" alt="GitHub">
+            <span>GitHub</span>
+        </div>
     </div>
 
     <!-- About Me Modal -->
@@ -65,7 +69,7 @@ Experiences:
         </div>
     </div>
 
-    <!-- Projects Modal - FIXED & CLEAN -->
+    <!-- Projects Modal -->
     <div id="projects-modal" class="projects-modal-custom" style="display:none;">
         <div class="app-titlebar" id="projects-titlebar">
             <span style="color: white;">Projects</span>
@@ -186,7 +190,7 @@ Experiences:
         </div>
     </div>    
 
-    <!-- WhatsApp Overlay -->
+    <!-- WhatsApp Modal -->
     <div id="whatsapp-overlay">
         <div id="whatsapp-modal">
             <div class="chat-sidebar">
@@ -230,15 +234,31 @@ Experiences:
         </div>
     </div>
 
-    <div id="visitor-widget">
-        <div id="live-users">– online</div>
-        <div id="total-users">– total visits</div>
+    <!-- GitHub Modal -->
+    <div id="github-modal" class="app-modal" style="display:none;">
+        <div class="app-titlebar" id="github-titlebar">
+            <span style="color: white;">GitHub - DeylAlrt</span>
+            <div class="app-titlebar-buttons">
+                <button id="github-minimize" title="Minimize">–</button>
+                <button id="github-maximize" title="Maximize">□</button>
+                <button id="github-close" title="Close">×</button>
+            </div>
+        </div>
+        <div class="app-content" id="github-content">
+            <div class="explorer-toolbar">
+                <span>File</span><span>Edit</span><span>View</span><span>Git</span>
+            </div>
+            <div id="github-repos-grid" class="repos-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 20px; padding: 20px; overflow-y: auto; height: 100%;">
+                <!-- Repos will be injected here -->
+            </div>
+        </div>
     </div>
 
-    <script src="SCRIPT_FOLDER/script.js"></script>
+    
+
+    <script type="module" src="SCRIPT_FOLDER/script.js"></script>
     <script src="SCRIPT_FOLDER/whatsapp.js"></script>
     <script src="SCRIPT_FOLDER/easter-egg.js"></script>
-    <script src="api/github.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 </body>

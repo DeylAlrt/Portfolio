@@ -514,6 +514,9 @@ body, html {
 }
 
 #whatsapp-modal {
+    position: absolute;
+    top: 5%;
+    left: 18%;
     background: #f0f2f5;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
@@ -523,7 +526,6 @@ body, html {
     max-height: 800px;
     display: flex;
     overflow: hidden;
-    transform: scale(0.95);
     transition: transform 0.3s ease-in-out;
     font-family: var(--font-modern);
 }
@@ -713,6 +715,8 @@ body, html {
 /* RESPONSIVENESS (Mobile View)*/
 @media (max-width: 900px) {
     #whatsapp-modal {
+        position: relative;
+        transform: none;
         width: 98%;
         height: 98vh;
         max-width: none;

@@ -1,4 +1,14 @@
-document.addEventListener('DOMContentLoaded', function() {
+import { startClock } from './utils.js';
+import { initDesktopIcons } from './desktop-icons.js';
+import { initModals } from './modals.js';
+import { initGithubClient } from './github.js';
+
+document.addEventListener('DOMContentLoaded', async function() {
+    // initialize organized modules and skip legacy inline logic
+    await initModals();
+    await initDesktopIcons();
+    await initGithubClient();
+    return; // legacy inline code below is preserved but skipped
     // --- Time/Date ---
     function updateDateTimeUAE() {
         const now = new Date();
@@ -419,6 +429,22 @@ function addRecycleTaskbarButton() {
     let draggingProjects = false, dragOffsetX2 = 0, dragOffsetY2 = 0;
 
     makeDraggable(projectsModal, projectsTitlebar);
+
+    projectsIcon.addEventListener('dblclick', async () => {
+        projectsModal.style.display = 'block';
+        bringToFront(projectsModal);
+        addTaskbarButton('📂 Projects', projectsModal);  // or whatever your add function is
+
+        try {
+            const res = await fetch('/api/github/repos/DeylAlrt');
+            if (!res.ok) throw new Error('Backend said nah 💀');
+            const repos = await res.json();
+            console.log('Fetched repos:', repos);
+            // TODO: render next
+        } catch (err) {
+            console.error('Fetch fucked:', err);
+        }
+    });
 
     function addProjectsTaskbarButton() {
         let btn = document.getElementById('taskbar-btn-projects');

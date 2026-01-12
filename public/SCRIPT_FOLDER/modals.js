@@ -98,6 +98,12 @@ export function initModals() {
   window.openProjectsWindow = function() { const projectsModal = document.getElementById('projects-modal'); projectsModal.style.display='block'; projectsModal.classList.remove('minimized','maximized'); if (window.addTaskbarButton) window.addTaskbarButton('📂 Projects','taskbar-btn-projects','projects-modal'); bringToFront(projectsModal); };
   window.openResumeWindow = function() { const resume = document.getElementById('resume-modal'); resume.style.display='block'; if (window.addTaskbarButton) window.addTaskbarButton('🌎 Resume - Google Chrome','taskbar-btn-resume','resume-modal'); bringToFront(resume); };
   window.openGithubWindow = function() { const g = document.getElementById('github-modal'); if (g) { g.style.display='block'; g.classList.remove('minimized','maximized'); if (window.addTaskbarButton) window.addTaskbarButton('GitHub - DeylAlrt','taskbar-btn-github','github-modal'); bringToFront(g); } };
+  // Ensure repos are refreshed whenever the GitHub modal is opened
+  const originalOpenGithub = window.openGithubWindow;
+  window.openGithubWindow = function() {
+    originalOpenGithub && originalOpenGithub();
+    if (typeof window.fetchGithubRepos === 'function') window.fetchGithubRepos('DeylAlrt');
+  };
   window.openContactWindow = function() { const c = document.getElementById('whatsapp-overlay'); if (c) { c.style.display='block'; if (window.addTaskbarButton) window.addTaskbarButton('📞 Contact','taskbar-btn-contact','whatsapp-overlay'); bringToFront(c); } };
   // Projects controls
   const projectsModal = document.getElementById('projects-modal');

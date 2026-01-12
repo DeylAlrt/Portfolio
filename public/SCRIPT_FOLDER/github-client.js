@@ -8,11 +8,19 @@ export async function initGithubClient() {
   async function fetchRepos(username = 'DeylAlrt') {
     try {
       const res = await fetch(`/api/github/repos/${encodeURIComponent(username)}`);
-      if (!res.ok) throw new Error('Network response not ok');
-      return await res.json();
+      const body = await res.json().catch(() => null);
+      if (!res.ok) {
+        const msg = body && body.message ? body.message : `HTTP ${res.status}`;
+        console.error('GitHub API error', res.status, body);
+        return { error: msg, status: res.status };
+      }
+      if (!Array.isArray(body)) {
+        return { error: body?.message || 'Unexpected API response', status: res.status };
+      }
+      return { data: body };
     } catch (err) {
       console.error('Failed to fetch repos', err);
-      return [];
+      return { error: err.message };
     }
   }
 
@@ -33,16 +41,42 @@ export async function initGithubClient() {
     });
   }
 
+  async function refreshRepos(username = 'DeylAlrt') {
+    if (!reposGrid) return;
+    reposGrid.innerHTML = '<div style="color:#999; padding:20px;">Loading…</div>';
+    const result = await fetchRepos(username);
+    if (result.error) {
+      // try a direct fetch to GitHub API as a fallback (CORS-enabled)
+      try {
+        const fallbackRes = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}/repos?per_page=100`);
+        if (fallbackRes.ok) {
+          const body = await fallbackRes.json();
+          renderRepos(body || []);
+          if (!body || body.length === 0) reposGrid.innerHTML = '<div style="color:#999; padding:20px;">No public repositories found.</div>';
+          return;
+        }
+      } catch (e) {
+        // ignore fallback error
+      }
+      reposGrid.innerHTML = `<div style="color:#e55353; padding:20px;">Error: ${result.error}</div>`;
+      return;
+    }
+    const repos = result.data || [];
+    if (repos.length === 0) {
+      reposGrid.innerHTML = '<div style="color:#999; padding:20px;">No public repositories found.</div>';
+      return;
+    }
+    renderRepos(repos);
+  }
+
+  // expose a global helper so modals or other controls can refresh repos when opening
+  window.fetchGithubRepos = refreshRepos;
+
   githubIcon?.addEventListener('dblclick', async () => {
     if (typeof window.openGithubWindow === 'function') window.openGithubWindow();
     else githubModal.style.display = 'block';
     if (typeof window.addTaskbarButton === 'function') window.addTaskbarButton('GitHub - DeylAlrt','taskbar-btn-github','github-modal');
-    const repos = await fetchRepos('DeylAlrt');
-    renderRepos(repos);
-    // ensure repos grid has nicer UI when empty
-    if (!repos || repos.length === 0) {
-      reposGrid.innerHTML = '<div style="color:#999; padding:20px;">No public repositories found.</div>';
-    }
+    await refreshRepos('DeylAlrt');
   });
 
   // style improvements via simple CSS-in-JS for repo-card

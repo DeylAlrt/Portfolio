@@ -1,7 +1,7 @@
 import { startClock } from './utils.js';
 import { initDesktopIcons } from './desktop-icons.js';
 import { initModals } from './modals.js';
-import { initGithubClient } from './github.js';
+import { initGithubClient } from './github-client.js';
 
 document.addEventListener('DOMContentLoaded', async function() {
     // initialize organized modules and skip legacy inline logic

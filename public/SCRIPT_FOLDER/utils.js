@@ -1,4 +1,5 @@
 // Utilities: time/date, DOM helpers, draggable, bringToFront
+// updateDateTimeUAE: update `.time` and `.date` elements to UAE time
 export function updateDateTimeUAE() {
   const now = new Date();
   const uae = new Date(now.getTime() + (now.getTimezoneOffset() * 60000) + (4 * 60 * 60000));
@@ -15,11 +16,13 @@ export function updateDateTimeUAE() {
   }
 }
 
+// startClock: initialize periodic clock updates
 export function startClock() {
   updateDateTimeUAE();
   setInterval(updateDateTimeUAE, 1000);
 }
 
+// getLangColor: return a color string for a given programming language
 export function getLangColor(lang) {
   if (!lang) return '#999';
   const map = {
@@ -35,6 +38,7 @@ export function getLangColor(lang) {
   return map[lang] || map.default;
 }
 
+// bringToFront: increase z-index to place `modal` above other app modals
 export function bringToFront(modal) {
   const modals = document.querySelectorAll('.app-modal');
   let maxZ = 0;
@@ -45,6 +49,7 @@ export function bringToFront(modal) {
   modal.style.zIndex = (maxZ + 1).toString();
 }
 
+// makeDraggable: make `modal` movable by dragging its `titlebar`
 export function makeDraggable(modal, titlebar) {
   if (!modal || !titlebar) return;
   let isDragging = false;

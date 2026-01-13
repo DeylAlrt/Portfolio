@@ -35,7 +35,7 @@ export function initModals() {
     }
   }
 
-  // Generic taskbar button helper for any modal
+  // addTaskbarButtonForModal: create or activate a taskbar button linked to `modalId`
   function addTaskbarButtonForModal(title, id, modalId) {
     let btn = document.getElementById(id);
     const modal = document.getElementById(modalId);
@@ -60,7 +60,8 @@ export function initModals() {
       btn.classList.add('active');
     }
   }
-  // expose helper
+  // expose helper: `window.addTaskbarButton(title, id, modalId)`
+  // creates a taskbar button that toggles the given modal
   window.addTaskbarButton = addTaskbarButtonForModal;
 
   function saveModalSizeAndPosition() {
@@ -97,6 +98,7 @@ export function initModals() {
   // Projects and Resume openers will be used by desktop-icons when dblclicked
   window.openProjectsWindow = function() { const projectsModal = document.getElementById('projects-modal'); projectsModal.style.display='block'; projectsModal.classList.remove('minimized','maximized'); if (window.addTaskbarButton) window.addTaskbarButton('📂 Projects','taskbar-btn-projects','projects-modal'); bringToFront(projectsModal); };
   window.openResumeWindow = function() { const resume = document.getElementById('resume-modal'); resume.style.display='block'; if (window.addTaskbarButton) window.addTaskbarButton('🌎 Resume - Google Chrome','taskbar-btn-resume','resume-modal'); bringToFront(resume); };
+  // openGithubWindow: show the GitHub modal and add a taskbar button
   window.openGithubWindow = function() { const g = document.getElementById('github-modal'); if (g) { g.style.display='block'; g.classList.remove('minimized','maximized'); if (window.addTaskbarButton) window.addTaskbarButton('GitHub - DeylAlrt','taskbar-btn-github','github-modal'); bringToFront(g); } };
   // Ensure repos are refreshed whenever the GitHub modal is opened
   const originalOpenGithub = window.openGithubWindow;

@@ -5,6 +5,8 @@ export async function initGithubClient() {
   const githubModal = document.getElementById('github-modal');
   const reposGrid = document.getElementById('github-repos-grid');
 
+  // fetchRepos: call server proxy `/api/github/repos/:username` and
+  // return an object `{ data: [...] }` on success or `{ error: 'msg' }` on failure
   async function fetchRepos(username = 'DeylAlrt') {
     try {
       const res = await fetch(`/api/github/repos/${encodeURIComponent(username)}`);
@@ -19,11 +21,12 @@ export async function initGithubClient() {
       }
       return { data: body };
     } catch (err) {
-      console.error('Failed to fetch repos', err);
+      console.error('Failed to load repos', err);
       return { error: err.message };
     }
   }
 
+  // renderRepos: render repo list into the `github-repos-grid` element
   function renderRepos(repos) {
     if (!reposGrid) return;
     reposGrid.innerHTML = '';
@@ -41,12 +44,13 @@ export async function initGithubClient() {
     });
   }
 
+  // refreshRepos: fetch and display repos; falls back to direct GitHub API if proxy fails
   async function refreshRepos(username = 'DeylAlrt') {
     if (!reposGrid) return;
     reposGrid.innerHTML = '<div style="color:#999; padding:20px;">Loading…</div>';
     const result = await fetchRepos(username);
     if (result.error) {
-      // try a direct fetch to GitHub API as a fallback (CORS-enabled)
+
       try {
         const fallbackRes = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}/repos?per_page=100`);
         if (fallbackRes.ok) {
@@ -70,6 +74,7 @@ export async function initGithubClient() {
   }
 
   // expose a global helper so modals or other controls can refresh repos when opening
+  // Usage: `window.fetchGithubRepos('username')`
   window.fetchGithubRepos = refreshRepos;
 
   githubIcon?.addEventListener('dblclick', async () => {
@@ -82,7 +87,7 @@ export async function initGithubClient() {
   // style improvements via simple CSS-in-JS for repo-card
   const style = document.createElement('style');
   style.textContent = `
-    .repo-card { display:block; padding:12px; border-radius:8px; background:#f6f8fa; color:#0b1226; text-decoration:none; border:1px solid rgba(3,102,214,0.06); }
+    .repo-card { display:block; padding:12px; border-radius:8px; background:#f6f8fa; width: 100%; height:30%; color:#0b1226; text-decoration:none; border:1px solid rgba(3,102,214,0.06); }
     .repo-card:hover { box-shadow:0 6px 18px rgba(11,18,38,0.08); transform:translateY(-2px); }
     .repo-name { font-weight:700; color:#0366d6; margin-bottom:6px; }
     .repo-desc { color:#57606a; font-size:13px; margin-bottom:8px; }

@@ -3,6 +3,7 @@ import https from "https";
 
 const router = express.Router();
 
+// Perform a GET request to the GitHub API and return parsed JSON with status
 function githubGet(path, token) {
   const options = {
     hostname: "api.github.com",
@@ -35,6 +36,7 @@ function githubGet(path, token) {
 
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || null;
 
+// GET /user/:username - proxy to GitHub user profile
 router.get("/user/:username", async (req, res) => {
   const username = encodeURIComponent(req.params.username);
   try {
@@ -45,6 +47,7 @@ router.get("/user/:username", async (req, res) => {
   }
 });
 
+// GET /repos/:username - proxy to list public repos for a user
 router.get("/repos/:username", async (req, res) => {
   const username = encodeURIComponent(req.params.username);
   try {
@@ -55,6 +58,7 @@ router.get("/repos/:username", async (req, res) => {
   }
 });
 
+// GET /rate - proxy to GitHub rate_limit endpoint
 router.get("/rate", async (req, res) => {
   try {
     const result = await githubGet(`/rate_limit`, GITHUB_TOKEN);
